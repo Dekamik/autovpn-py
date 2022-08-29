@@ -33,7 +33,7 @@ import yaml
 from providers.exceptions import ProviderError
 from providers.linode import Linode
 from providers.base import Provider
-from provisioning import agent
+from utils import agent
 
 
 def is_provider_defined(provider, config) -> bool:

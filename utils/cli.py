@@ -1,13 +1,17 @@
-import subprocess
+import time
+
+from fabric import Connection
+from paramiko.ssh_exception import NoValidConnectionsError
 
 
-def run(command):
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-    while process.stdout.readable():
-        line = process.stdout.readline()
-
-        if not line:
+def stabilize_connection(c: Connection, max_retries: int, sleep_seconds: int):
+    attempt = 0
+    while attempt < max_retries:
+        try:
+            c.run("echo Connected!")
             break
-
-        print(line.strip())
+        except NoValidConnectionsError:
+            print(f"Attempt failed ({attempt}/{max_retries}")
+            attempt += 1
+            time.sleep(sleep_seconds)
+            print("Trying again...")
