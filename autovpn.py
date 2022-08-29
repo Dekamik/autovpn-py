@@ -81,10 +81,10 @@ def up(args, config):
         instance = provider.create_server(region, type_slug, image)
 
         try:
-            print("Installing OpenVPN server...")
+            print("Setup OpenVPN...")
             agent.install_vpn_server(instance, config)
 
-            print("Connecting to OpenVPN server...")
+            print("Opening session...")
             agent.vpn_connect()
 
         finally:
