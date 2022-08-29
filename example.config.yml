@@ -1,10 +1,7 @@
 agent:
+  max_retries: 10
   script_url: https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh
-  ssh_key_path: ~/.ssh/id_ed25519
-
-authorized_keys:
-  - <PUBLIC_SSH_KEY>
-  - <PUBLIC_SSH_KEY>
+  sleep_seconds: 3
 
 providers:
   linode:

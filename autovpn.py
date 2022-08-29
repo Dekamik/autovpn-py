@@ -33,7 +33,7 @@ import yaml
 from providers.exceptions import ProviderError
 from providers.linode import Linode
 from providers.base import Provider
-from provisioning.agent import Agent
+from provisioning import agent
 
 
 def is_provider_defined(provider, config) -> bool:
@@ -81,8 +81,6 @@ def up(args, config):
         instance = provider.create_server(region, type_slug, image)
 
         try:
-            agent = Agent()
-
             print("Installing OpenVPN server...")
             agent.install_vpn_server(instance, config)
 
