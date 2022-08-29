@@ -3,7 +3,7 @@ AutoVPN
 
 Automatically provisions and de-provisions single-use VPN servers for one-shot VPN sessions.
 
-Usage: autovpn.py up [ -k API_KEY | --key API_KEY ] [ -t SLUG | --type SLUG ] PROVIDER REGION
+Usage: autovpn.py up [ -k KEY | --key KEY ] [ -t SLUG | --type SLUG ] [ -i IMAGE | --image IMAGE ] PROVIDER REGION
        autovpn.py regions PROVIDER
        autovpn.py providers
        autovpn.py (-h | --help)
@@ -19,7 +19,8 @@ Arguments:
   REGION    VPS provider region on which to create VPN endpoint
 
 Options:
-  -k --key API_KEY  specify API key
+  -i --image IMAGE  specify server image
+  -k --key KEY      specify API key
   -t --type SLUG    specify instance type slug to use as server
   -h --help         show help
   --version         show version
@@ -42,7 +43,9 @@ def is_provider_defined(provider, config) -> bool:
 def get_provider(provider_arg, api_key) -> Provider:
     if provider_arg == "linode":
         return Linode(api_key)
-    raise ValueError(f"{provider_arg} is not a supported provider")
+
+    print(f"{provider_arg} is not a supported provider")
+    sys.exit(1)
 
 
 def get_key(args, config):
@@ -66,21 +69,22 @@ def get_key(args, config):
 def up(args, config):
     key = get_key(args, config)
     provider_arg = args["PROVIDER"]
-    authorized_keys = config["authorized_keys"]
+    region = args["REGION"]
+    type_slug = args["--type"] or config["providers"][provider_arg]["type_slug"]
+    image = args["--image"] or config["providers"][provider_arg]["image"]
 
     try:
-        region = args["REGION"]
-        type_slug = args["--type"] or config["providers"][provider_arg]["type_slug"]
+
         provider = get_provider(provider_arg, key)
 
         print("Creating server...")
-        instance = provider.create_server(region, type_slug, authorized_keys)
+        instance = provider.create_server(region, type_slug, image)
 
         try:
             agent = Agent()
 
             print("Installing OpenVPN server...")
-            agent.install_vpn_server()
+            agent.install_vpn_server(instance, config)
 
             print("Connecting to OpenVPN server...")
             agent.vpn_connect()
@@ -127,8 +131,7 @@ def main():
     elif args["providers"]:
         show_providers(config)
 
-    sys.exit(0)
-
 
 if __name__ == '__main__':
     main()
+    sys.exit(0)

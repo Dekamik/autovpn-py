@@ -2,9 +2,10 @@ from abc import abstractmethod
 
 
 class Instance:
-    def __init__(self, instance_id, ip_address):
+    def __init__(self, instance_id, ipv4, root_pass):
         self.instance_id = instance_id
-        self.ip_address: str = ip_address
+        self.ipv4: str = ipv4
+        self.root_pass: str = root_pass
 
 
 class Provider:
@@ -16,7 +17,7 @@ class Provider:
         pass
 
     @abstractmethod
-    def create_server(self, region: str, type_slug: str, authorized_keys: list) -> Instance:
+    def create_server(self, region: str, type_slug: str, image: str) -> Instance:
         pass
 
     @abstractmethod
