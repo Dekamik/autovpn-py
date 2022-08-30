@@ -4,24 +4,22 @@ AutoVPN
 
 Automatically provisions and de-provisions single-use VPN servers for one-shot VPN sessions.
 
-Usage: autovpn.py up PROVIDER REGION
-       autovpn.py regions PROVIDER
+Usage: autovpn.py <provider> <region>
+       autovpn.py <provider> regions
        autovpn.py providers
        autovpn.py (-h | --help)
-       autovpn.py --version
 
 Commands:
-  up PROVIDER REGION  create and connect to VPN endpoint at PROVIDER on REGION
-  regions PROVIDER    list available regions for PROVIDER
-  providers           list available providers
+  <provider> <region>  create and connect to VPN endpoint at <provider> on <region>
+  <provider> regions   list available regions for <provider>
+  providers            list available providers
 
 Arguments:
-  PROVIDER  VPS provider to use
-  REGION    VPS provider region on which to create VPN endpoint
+  <provider>  VPS provider to use
+  <region>    VPS provider region on which to create VPN endpoint
 
 Options:
-  -h --help         show help
-  --version         show version
+  -h --help  show this
 """
 import sys
 
@@ -39,7 +37,7 @@ def is_provider_defined(provider, config) -> bool:
 
 
 def get_provider(args, config) -> Provider:
-    provider_arg = args["PROVIDER"]
+    provider_arg = args["<provider>"]
 
     if provider_arg == "linode":
         return Linode(args, config)
@@ -49,12 +47,12 @@ def get_provider(args, config) -> Provider:
 
 
 def up(args, config):
-    provider_arg = args["PROVIDER"]
+    provider_arg = args["<provider>"]
     if not is_provider_defined(provider_arg, config):
         print(f"{provider_arg} is not a supported provider")
         sys.exit(1)
 
-    region = args["REGION"]
+    region = args["<region>"]
     type_slug = config["providers"][provider_arg]["type_slug"]
     image = config["providers"][provider_arg]["image"]
 
@@ -81,7 +79,7 @@ def up(args, config):
 
 
 def show_regions(args, config):
-    provider_arg = args["PROVIDER"]
+    provider_arg = args["<provider>"]
 
     if not is_provider_defined(provider_arg, config):
         print(f"{provider_arg} is not a supported provider")
@@ -103,16 +101,15 @@ def main():
 
     args = docopt(__doc__)
 
-    if args["up"]:
-        up(args, config)
-
-    elif args["regions"]:
+    if args["regions"]:
         show_regions(args, config)
-
     elif args["providers"]:
         show_providers(config)
+    else:
+        up(args, config)
+
+    sys.exit(0)
 
 
 if __name__ == '__main__':
     main()
-    sys.exit(0)

@@ -21,7 +21,7 @@ def get_key(provider_arg, config):
 class Linode(Provider):
     def __init__(self, args, config):
         super().__init__()
-        self.api_key: str = get_key(args["PROVIDER"], config)
+        self.api_key: str = get_key(args["<provider>"], config)
 
     def get_regions(self, show_countries=False) -> list:
         response = requests.get("https://api.linode.com/v4/regions")
