@@ -1,6 +1,7 @@
 import json
 import secrets
 import string
+import sys
 import time
 
 import requests
@@ -9,10 +10,18 @@ from providers.base import Provider, Instance
 from providers.exceptions import ProviderError
 
 
+def get_key(provider_arg, config):
+    try:
+        return config["providers"][provider_arg]["key"]
+    except IndexError:
+        print("API key must be defined in config file")
+        sys.exit(1)
+
+
 class Linode(Provider):
-    def __init__(self, api_key):
+    def __init__(self, args, config):
         super().__init__()
-        self.api_key: str = api_key
+        self.api_key: str = get_key(args["PROVIDER"], config)
 
     def get_regions(self, show_countries=False) -> list:
         response = requests.get("https://api.linode.com/v4/regions")

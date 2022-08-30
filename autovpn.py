@@ -1,9 +1,10 @@
+#!/usr/bin/env python3
 """
 AutoVPN
 
 Automatically provisions and de-provisions single-use VPN servers for one-shot VPN sessions.
 
-Usage: autovpn.py up [ -k KEY | --key KEY ] [ -t SLUG | --type SLUG ] [ -i IMAGE | --image IMAGE ] PROVIDER REGION
+Usage: autovpn.py up PROVIDER REGION
        autovpn.py regions PROVIDER
        autovpn.py providers
        autovpn.py (-h | --help)
@@ -19,9 +20,6 @@ Arguments:
   REGION    VPS provider region on which to create VPN endpoint
 
 Options:
-  -i --image IMAGE  specify server image
-  -k --key KEY      specify API key
-  -t --type SLUG    specify instance type slug to use as server
   -h --help         show help
   --version         show version
 """
@@ -40,42 +38,28 @@ def is_provider_defined(provider, config) -> bool:
     return provider in config["providers"]
 
 
-def get_provider(provider_arg, api_key) -> Provider:
+def get_provider(args, config) -> Provider:
+    provider_arg = args["PROVIDER"]
+
     if provider_arg == "linode":
-        return Linode(api_key)
+        return Linode(args, config)
 
     print(f"{provider_arg} is not a supported provider")
     sys.exit(1)
 
 
-def get_key(args, config):
-    key = args["--key"]
-    if key:
-        return key
-
+def up(args, config):
     provider_arg = args["PROVIDER"]
     if not is_provider_defined(provider_arg, config):
         print(f"{provider_arg} is not a supported provider")
         sys.exit(1)
 
-    key = config["providers"][provider_arg]["key"]
-    if not key:
-        print("API key must be defined in command or in config file")
-        sys.exit(1)
-
-    return key
-
-
-def up(args, config):
-    key = get_key(args, config)
-    provider_arg = args["PROVIDER"]
     region = args["REGION"]
-    type_slug = args["--type"] or config["providers"][provider_arg]["type_slug"]
-    image = args["--image"] or config["providers"][provider_arg]["image"]
+    type_slug = config["providers"][provider_arg]["type_slug"]
+    image = config["providers"][provider_arg]["image"]
 
     try:
-
-        provider = get_provider(provider_arg, key)
+        provider = get_provider(args, config)
 
         print("Creating server...")
         instance = provider.create_server(region, type_slug, image)
@@ -97,7 +81,6 @@ def up(args, config):
 
 
 def show_regions(args, config):
-    key = get_key(args, config)
     provider_arg = args["PROVIDER"]
 
     if not is_provider_defined(provider_arg, config):
@@ -105,7 +88,7 @@ def show_regions(args, config):
         sys.exit(1)
 
     print("Downloading regions...")
-    provider = get_provider(provider_arg, key)
+    provider = get_provider(args, config)
     regions = provider.get_regions(True)
     print(*regions, sep="\n")
 

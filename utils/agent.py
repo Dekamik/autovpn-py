@@ -30,7 +30,7 @@ def install_vpn_server(instance: Instance, config):
         stabilize_connection(c, max_retries, sleep_seconds)
 
         c.run(f"curl {script_url} -o openvpn-install.sh")
-        c.run(f"chmod +x openvpn-install.sh")
+        c.run("chmod +x openvpn-install.sh")
         c.run("export AUTO_INSTALL=y; ./openvpn-install.sh")
         c.run("sed -i 's/^verb [0-9]*$/verb 0/g' /etc/openvpn/server.conf")
         c.get("/root/client.ovpn")
