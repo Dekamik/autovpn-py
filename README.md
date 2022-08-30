@@ -2,14 +2,28 @@
 
 # Setup
 
-Before running AutoVPN you must have python3, pip and OpenVPN installed.
-After installation copy `example.config.yml` into `config.yml` and set up 
-your API keys for each provider you wish to use.
+## 1: Install Python
 
-Next, open a terminal in the project folder (where `requirements.txt` is)
+Python is required to run this script.
+
+You should be able to find it here: https://www.python.org/downloads/
+or install it through a package manager on Linux.
+
+## 2: Install OpenVPN
+
+OpenVPN is required to connect to the VPN server.
+
+**Note:** This script doesn't support "OpenVPN Connect", you need to install 
+the "OpenVPN" CLI tool.
+If you're on Windows, you should find installers etc. here: 
+https://openvpn.net/community-downloads/
+
+## 3: Install script dependencies
+
+Open a terminal inside the project folder (where `requirements.txt` is)
 and run `pip install -r requirements.txt`.
 
-Now you're ready to use AutoVPN.
+AutoVPN is now installed.
 
 # Usage
 

@@ -1,3 +1,5 @@
+import subprocess
+import sys
 import time
 
 from fabric import Connection
@@ -36,5 +38,10 @@ def install_vpn_server(instance: Instance, config):
         c.get("/root/client.ovpn")
 
 
-def vpn_connect():
-    pass
+def vpn_connect(config, ovpn_config: str):
+
+    if sys.platform.startswith("win32"):
+        pass
+    else:
+        with subprocess.Popen(["openvpn", "-c", ovpn_config]) as p:
+            pass
