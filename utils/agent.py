@@ -1,7 +1,22 @@
+import time
+
 from fabric import Connection
+from paramiko.ssh_exception import NoValidConnectionsError
 
 from providers.base import Instance
-from utils.cli import stabilize_connection
+
+
+def stabilize_connection(c: Connection, max_retries: int, sleep_seconds: int):
+    attempt = 0
+    while attempt < max_retries:
+        try:
+            c.run("echo Connected!")
+            break
+        except (NoValidConnectionsError, TimeoutError):
+            attempt += 1
+            print(f"Attempt {attempt}/{max_retries} failed")
+            time.sleep(sleep_seconds)
+            print("Retrying...")
 
 
 def install_vpn_server(instance: Instance, config):

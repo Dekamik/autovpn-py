@@ -5,6 +5,6 @@ agent:
 
 providers:
   linode:
-    image: linode/ubuntu22.04
+    image: linode/ubuntu20.04
     key: <LINODE_API_KEY>
     type_slug: g6-dedicated-2
