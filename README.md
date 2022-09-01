@@ -27,8 +27,8 @@ disconnect from the session.
 
 Python is required to run this script.
 
-You should be able to find it here: https://www.python.org/downloads/ or install it 
-through a package manager.
+You should be able to find it here: https://www.python.org/downloads/ or install 
+it through a package manager.
 
 ## 2: Install OpenVPN
 
