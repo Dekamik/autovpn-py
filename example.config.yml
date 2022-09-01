@@ -7,7 +7,7 @@ openvpn:
   path:
     darwin: openvpn
     linux: openvpn
-    win32: C:\Program Files\OpenVPN\bin\openvpn-gui.exe
+    win32: C:\Program` Files\OpenVPN\bin\openvpn.exe
 
 providers:
   linode:

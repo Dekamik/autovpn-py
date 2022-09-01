@@ -21,6 +21,7 @@ Arguments:
 Options:
   -h --help  show this
 """
+import os
 import sys
 
 from docopt import docopt
@@ -46,15 +47,21 @@ def get_provider(args, config) -> Provider:
     sys.exit(1)
 
 
-def up(args, config):
+def up(args, config) -> int:
+    global return_code
+    return_code = 0
+
     provider_arg = args["<provider>"]
     if not is_provider_defined(provider_arg, config):
         print(f"{provider_arg} is not a supported provider")
-        sys.exit(1)
+        return 1
 
     region = args["<region>"]
     type_slug = config["providers"][provider_arg]["type_slug"]
     image = config["providers"][provider_arg]["image"]
+    instance = None
+    provider = None
+    ovpn_config = None
 
     try:
         provider = get_provider(args, config)
@@ -62,54 +69,73 @@ def up(args, config):
         print("Creating server...")
         instance = provider.create_server(region, type_slug, image)
 
-        try:
-            print("Setup OpenVPN...")
-            ovpn_config = agent.install_openvpn_server(instance, config)
+        print("Setup OpenVPN...")
+        ovpn_config = agent.install_openvpn_server(instance, config)
 
-            print("Opening session...")
-            openvpn.connect(config, ovpn_config)
-
-        finally:
-            print("Destroying server...")
-            provider.destroy_server(instance)
+        print("Opening session...")
+        openvpn.connect(config, ovpn_config)
 
     except (ProviderError, ValueError) as ex:
         print(ex)
-        sys.exit(1)
+        return_code = 1
+
+    except KeyboardInterrupt:
+        print("Interrupted")
+        return_code = 1
+
+    finally:
+        if provider is not None and instance is not None:
+            print("Destroying server...")
+            provider.destroy_server(instance)
+
+        if ovpn_config is not None:
+            print(f"Deleting {ovpn_config}...")
+            os.remove(ovpn_config)
+
+    return return_code
 
 
-def show_regions(args, config):
+def show_regions(args, config) -> int:
     provider_arg = args["<provider>"]
 
     if not is_provider_defined(provider_arg, config):
         print(f"{provider_arg} is not a supported provider")
-        sys.exit(1)
+        return 1
 
     print("Downloading regions...")
     provider = get_provider(args, config)
     regions = provider.get_regions(True)
     print(*regions, sep="\n")
 
+    return 0
 
-def show_providers(config):
+
+def show_providers(config) -> int:
     print(*config["providers"].keys(), sep="\n")
+    return 0
 
 
-def main():
+def main() -> int:
     with open("./config.yml", "r") as stream:
         config = yaml.safe_load(stream)
 
     args = docopt(__doc__)
 
     if args["regions"]:
-        show_regions(args, config)
+        return show_regions(args, config)
     elif args["providers"]:
-        show_providers(config)
+        return show_providers(config)
     else:
-        up(args, config)
-
-    sys.exit(0)
+        return up(args, config)
 
 
 if __name__ == '__main__':
-    main()
+    # if sys.platform == "win32":
+    #     import ctypes
+    #
+    #     if ctypes.windll.shell32.IsUserAnAdmin() == 0:
+    #         print("This tool must be run as an administrator.")
+    #         sys.exit(1)
+
+    return_code = main()
+    sys.exit(return_code)

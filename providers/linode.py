@@ -59,16 +59,21 @@ class Linode(Provider):
             create_data = create_res.json()
             instance = Instance(create_data["id"], create_data["ipv4"], root_pass)
 
-            check_res = requests.get(f"https://api.linode.com/v4/linode/instances/{instance.instance_id}",
-                                     headers=headers)
-            while check_res.json()["status"] in ("provisioning", "booting"):
-                status = check_res.json()["status"]
-                print(f"Server {status}, stand-by...")
-                time.sleep(5)
+            try:
                 check_res = requests.get(f"https://api.linode.com/v4/linode/instances/{instance.instance_id}",
                                          headers=headers)
-            status = check_res.json()["status"]
-            print(f"Server {status}")
+                while check_res.json()["status"] in ("provisioning", "booting"):
+                    status = check_res.json()["status"]
+                    print(f"Server {status}, stand-by...")
+                    time.sleep(5)
+                    check_res = requests.get(f"https://api.linode.com/v4/linode/instances/{instance.instance_id}",
+                                             headers=headers)
+                status = check_res.json()["status"]
+                print(f"Server {status}")
+            except KeyboardInterrupt as e:
+                print("Interrupted on server creation, destroying server...")
+                self.destroy_server(instance)
+                raise e
 
             return instance
         else:
