@@ -1,5 +1,3 @@
-import subprocess
-import sys
 import time
 
 from fabric import Connection
@@ -21,7 +19,7 @@ def stabilize_connection(c: Connection, max_retries: int, sleep_seconds: int):
             print("Retrying...")
 
 
-def install_vpn_server(instance: Instance, config):
+def install_openvpn_server(instance: Instance, config):
     print(f"Connecting to {instance.ipv4[0]}...")
 
     with Connection(instance.ipv4[0], user="root", connect_kwargs={"password": instance.root_pass}) as c:
@@ -37,11 +35,4 @@ def install_vpn_server(instance: Instance, config):
         c.run("sed -i 's/^verb [0-9]*$/verb 0/g' /etc/openvpn/server.conf")
         c.get("/root/client.ovpn")
 
-
-def vpn_connect(config, ovpn_config: str):
-
-    if sys.platform.startswith("win32"):
-        pass
-    else:
-        with subprocess.Popen(["openvpn", "-c", ovpn_config]) as p:
-            pass
+        return "client.ovpn"

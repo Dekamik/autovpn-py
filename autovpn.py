@@ -29,7 +29,7 @@ import yaml
 from providers.exceptions import ProviderError
 from providers.linode import Linode
 from providers.base import Provider
-from utils import agent
+from utils import agent, openvpn
 
 
 def is_provider_defined(provider, config) -> bool:
@@ -64,10 +64,10 @@ def up(args, config):
 
         try:
             print("Setup OpenVPN...")
-            agent.install_vpn_server(instance, config)
+            ovpn_config = agent.install_openvpn_server(instance, config)
 
             print("Opening session...")
-            agent.vpn_connect()
+            openvpn.connect(config, ovpn_config)
 
         finally:
             print("Destroying server...")
