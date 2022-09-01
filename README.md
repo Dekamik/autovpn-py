@@ -17,7 +17,7 @@ disconnect from the session.
 - [4. FAQ](#faq)
 	- [4.1 Why should I use AutoVPN?](#why-should-i-use-autovpn)
 	- [4.2 Why should I NOT use AutoVPN?](#why-should-i-not-use-autovpn)
-	- [4.3 I want to watch Netflix/Disney+ in another country, will this tool help me?](#i-want-to-watch-netflix/disney+-in-another-country-will-this-tool-help-me)
+	- [4.3 I want to watch Netflix/Disney+ in another country, will this tool help me?](#i-want-to-watch-netflixdisney-in-another-country-will-this-tool-help-me)
 	- [4.4 Will this tool hide me from hackers?](#will-this-tool-hide-me-from-hackers)
 	- [4.5 Will this tool hide me from the government?](#will-this-tool-hide-me-from-the-government)
 
@@ -97,7 +97,7 @@ vulnerabilities compared to other vendors.
 
 Other vendors should be fine for single-sessions, despite vulnerabilities.
 
-## Why should I NOT I use AutoVPN?
+## Why should I NOT use AutoVPN?
 
 ### Fewer countries to choose from
 
@@ -125,7 +125,7 @@ won't make a difference.
 
 **Remember**: this won't help against other attack vectors, like rubber duckys,
 phishing emails, password leaks etc. To mitigate that you must revise your 
-overall operational IT-security strategy (SecOps).
+overall operational security (OpSec).
 
 ## Will this tool hide me from the government?
 
