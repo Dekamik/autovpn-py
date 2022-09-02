@@ -13,14 +13,14 @@ def connect(config, ovpn_config: str):
                      r"\" -ArgumentList \"--config\",\"" + ovpn_config + r"\" -Verb RunAs }\""
         subprocess.run(ps_command, shell=True, check=True)
 
-    elif platform.startswith("linux") \
-            or platform.startswith("darwin"):
+    elif platform.startswith("linux") or platform.startswith("darwin"):
         try:
-            subprocess.run(f"{command} --config {ovpn_config}", stdin=subprocess.PIPE, shell=True, check=True)
+            subprocess.run(f"{command} --config {ovpn_config}", shell=True, check=True)
 
         except subprocess.CalledProcessError:
-            root_password = getpass.getpass(f"Root privileges required, enter password for {os.getlogin()}:")
-            subprocess.run(f"echo {root_password} | sudo -S {command} --config {ovpn_config}", shell=True, check=True)
+            root_password = getpass.getpass(f"Root privileges required, enter password for {os.getlogin()}: ")
+            subprocess.run(f"echo {root_password} | sudo -S {command} --config {ovpn_config}", stdin=subprocess.PIPE,
+                           shell=True)
 
     else:
         print(f"Unsupported platform: {platform}")
