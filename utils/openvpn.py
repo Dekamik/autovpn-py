@@ -38,12 +38,14 @@ def connect(config, ovpn_config: str):
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
             wait_for_interrupt(p)
         else:
+            # TODO: Find a way to retry on wrong password
             root_password = getpass.getpass(f"Root privileges required, enter password for {os.getlogin()}: ")
-            p = subprocess.Popen(f"sudo -S {cmd}", stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
+
+            # This is kinda hacky, but works since child process isn't spawned before write to stdin.
+            # When debugging, the child process is spawned before and then prompts for password.
+            # This seems to not be a problem IRL, but it IS a race condition that could spawn bugs in the future.
+            p = subprocess.Popen(f"sudo -Sn {cmd}", stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
             with p.stdin as pipe:
-                # This is kinda hacky, but works since child process isn't spawned before write to stdin.
-                # When debugging, the child process is spawned before and then prompts for password.
-                # This seems to not be a problem IRL, but it IS a race condition that could spawn bugs in the future.
                 pipe.write(root_password.encode("utf8"))
             wait_for_interrupt(p)
 
