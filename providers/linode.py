@@ -71,7 +71,7 @@ class Linode(Provider):
                 status = check_res.json()["status"]
                 print(f"Server {status}")
             except KeyboardInterrupt as e:
-                print("Interrupted on server creation, destroying server...")
+                print("Cancelling server creation...")
                 self.destroy_server(instance)
                 raise e
 
