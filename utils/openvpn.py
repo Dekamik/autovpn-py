@@ -16,8 +16,8 @@ def wait_for_interrupt(p):
 
     print("Closing VPN tunnel...")
     p.terminate()
-    # Only stdout.read works here. Program stalls if server is destroyed before process is terminated.
-    # TODO: Check if this is POSIX-specific
+    # Only stdout.read actually waits until OpenVPN is finished. TODO: Check if this is POSIX-specific
+    # Program stalls if server is destroyed before process is terminated.
     p.stdout.read()
 
 
@@ -41,6 +41,9 @@ def connect(config, ovpn_config: str):
             root_password = getpass.getpass(f"Root privileges required, enter password for {os.getlogin()}: ")
             p = subprocess.Popen(f"sudo -S {cmd}", stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
             with p.stdin as pipe:
+                # This is kinda hacky, but works since child process isn't spawned before write to stdin.
+                # When debugging, the child process is spawned before and then prompts for password.
+                # This seems to not be a problem IRL, but it IS a race condition that could spawn bugs in the future.
                 pipe.write(root_password.encode("utf8"))
             wait_for_interrupt(p)
 
