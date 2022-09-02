@@ -4,14 +4,35 @@ import subprocess
 import sys
 
 
+def wait_for_interrupt(p):
+    pass
+
+
 def connect(config, ovpn_config: str):
     platform = sys.platform
     command = config["openvpn"]["path"][platform]
 
     if platform.startswith("win32"):
-        ps_command = r"Powershell -Command \"& { Start-Process -FilePath \"" + command + \
-                     r"\" -ArgumentList \"--config\",\"" + ovpn_config + r"\" -Verb RunAs }\""
-        subprocess.run(ps_command, shell=True, check=True)
+        cmd = ["powershell", "-Command",
+               f"\" Start-Process -FilePath {command} -ArgumentList --config,{ovpn_config} -Verb RunAs \""]
+        with subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE) as p:
+            print("VPN tunnel opened, press CTRL+C to exit")
+
+            try:
+                while True:
+                    line = p.stdout.readline().decode("utf8")
+                    err = p.stderr.readline().decode("utf8")
+
+                    if line:
+                        print(line)
+                    if err:
+                        print(err)
+            except KeyboardInterrupt:
+                pass
+
+            print("Closing VPN tunnel...")
+            p.terminate()
 
     elif platform.startswith("linux") or platform.startswith("darwin"):
         try:
