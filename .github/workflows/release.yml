@@ -12,7 +12,7 @@ jobs:
         platform:
           - os: ubuntu-latest
             archive-content-type: application/gzip
-            archive-platform: linux
+            archive-platform: linux-osx
             archive-name: autovpn.tar.gz
             archive-extension: tar.gz
             archive-command: tar --transform 's/.*\///g' -czvf autovpn.tar.gz dist/autovpn README.md LICENSE example.autovpn.yml
@@ -23,13 +23,6 @@ jobs:
             archive-name: autovpn.zip
             archive-extension: zip
             archive-command: tar.exe -a -c -f autovpn.zip dist\autovpn.exe README.md LICENSE example.autovpn.yml
-
-          - os: macos-latest
-            archive-content-type: application/gzip
-            archive-platform: osx
-            archive-name: autovpn.tar.gz
-            archive-extension: tar.gz
-            archive-command: tar --transform 's/.*\///g' -czvf autovpn.tar.gz dist/autovpn README.md LICENSE example.autovpn.yml
 
     runs-on: ${{ matrix.platform.os }}
     steps:
