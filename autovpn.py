@@ -130,12 +130,5 @@ def main() -> int:
 
 
 if __name__ == '__main__':
-    # if sys.platform == "win32":
-    #     import ctypes
-    #
-    #     if ctypes.windll.shell32.IsUserAnAdmin() == 0:
-    #         print("This tool must be run as an administrator.")
-    #         sys.exit(1)
-
     return_code = main()
     sys.exit(return_code)

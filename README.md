@@ -44,14 +44,15 @@ https://openvpn.net/community-downloads/
 Open a terminal/command prompt inside the project folder (where 
 `requirements.txt` is) and run `pip install -r requirements.txt`.
 
-OpenVPN must be run as a privileged user/root, so if you're on Linux/OSX you 
-may have to install packages on the root user (by running the `pip` command as 
-`sudo`. If you run this unprivileged, the script will prompt for your password 
-and pipe it to the sudo command's stdin.
-
 # Usage
 
-It's recommended to run this command as root or in a privileged command prompt.
+OpenVPN must be run as a privileged user/root and handles escalation differently
+depending on platform:
+
+* **Linux/OSX**: If not already run as root, the script will prompt for your 
+                 password and pipe it to the sudo command's stdin.
+* **Windows**: The script asks for administrator privileges through UAC, and then
+               opens the VPN tunnel in a separate Powershell window.
 
 ```
 Usage: autovpn.py <provider> <region>  Provisions a VPN server at <provider> on <region> and connects to it
@@ -95,7 +96,8 @@ As of 2022-09-01, Linode is the recommended default, since they use KVM for
 hardware virtualization, which is up-to-date and has fewer security 
 vulnerabilities compared to other vendors.
 
-Other vendors should be fine for single-sessions, despite vulnerabilities.
+That said: other vendors should be fine for single-sessions, despite 
+vulnerabilities.
 
 ## Why should I NOT use AutoVPN?
 
@@ -110,6 +112,11 @@ to connect to may not be available.
 
 If you want to hide your activity from agencies like the NSA or the FSB, this alone 
 won't hide your activity from government actors.
+
+### May not be able to connect to the VPS provider from some countries
+
+Some countries may block the VPS resources needed and thus this may not work in
+these countries.
 
 ## I want to watch Netflix/Disney+ in another country, will this tool help me?
 
@@ -129,8 +136,8 @@ overall operational security (OpSec).
 
 ## Will this tool hide me from the government?
 
-Absolutely not. If they want to find you, they WILL find you. If this is your 
-concern, you must revise your threat model.
+No. If they want to find you, they *will* find you. If this is your concern, you must 
+revise your threat model.
 
 Even if the server gets destroyed and even if they're not somehow tapping into your
 traffic (which we can assume), they could probably access your billing information,

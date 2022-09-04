@@ -36,7 +36,7 @@ def connect_posix(command, ovpn_config, platform):
     if os.geteuid() == 0:  # user is root
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     else:
-        # TODO: Find a way to retry on wrong password
+        # TODO: Find a way to test and retry passwords
         root_password = getpass.getpass(f"Root privileges required, enter password for {os.getlogin()}: ")
 
         # This is a race condition that could spawn bugs in the future. At the moment the sudo prompt is suppressed.
