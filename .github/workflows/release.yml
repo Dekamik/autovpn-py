@@ -52,4 +52,4 @@ jobs:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: ${{ matrix.platform.archive-name }}
           asset_name: autovpn_${{ github.event.release.tag_name }}_${{ matrix.platform.archive-platform }}.${{ matrix.platform.archive-extension }}
-          asset_content_type: ${{ matrix.platform.asset-content-type }}
+          asset_content_type: ${{ matrix.platform.archive-content-type }}

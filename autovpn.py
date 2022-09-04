@@ -121,10 +121,10 @@ def show_providers(config) -> int:
 
 
 def main() -> int:
+    args = docopt(__doc__, version=__version__)
+
     with open("./autovpn.yml", "r") as stream:
         config = yaml.safe_load(stream)
-
-    args = docopt(__doc__)
 
     if args["<region>"] is None:
         return show_regions(args, config)
