@@ -39,14 +39,11 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v4
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Install Pyinstaller
-        run: pip install pyinstaller
-
-      - name: Set build version
-        run: sed -i 's/__version__ = "DEVELOPMENT_BUILD"/__version__ = "${{ github.event.release.tag_name }}"/g' autovpn.py
+      - name: Setup build environment
+        run: |
+          pip3 install -r requirements.txt
+          pip3 install pyinstaller
+          sed -i 's/__version__ = "DEVELOPMENT_BUILD"/__version__ = "${{ github.event.release.tag_name }}"/g' autovpn.py
 
       - name: Build executable
         run: pyinstaller -F autovpn.py
