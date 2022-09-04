@@ -4,14 +4,15 @@ AutoVPN
 
 Automatically provisions and de-provisions single-use VPN servers for one-shot VPN sessions.
 
-Usage: autovpn.py <provider> <region>
-       autovpn.py <provider> regions
-       autovpn.py providers
-       autovpn.py (-h | --help)
+Usage: autovpn <provider> <region>
+       autovpn <provider>
+       autovpn providers
+       autovpn (-h | --help)
+       autovpn --version
 
 Commands:
   <provider> <region>  create and connect to VPN endpoint at <provider> on <region>
-  <provider> regions   list available regions for <provider>
+  <provider>           list available regions for <provider>
   providers            list available providers
 
 Arguments:
@@ -20,7 +21,11 @@ Arguments:
 
 Options:
   -h --help  show this
+  --version  show version
 """
+
+__version__ = "DEVELOPMENT_BUILD"
+
 import os
 import sys
 
@@ -116,12 +121,12 @@ def show_providers(config) -> int:
 
 
 def main() -> int:
-    with open("./config.yml", "r") as stream:
+    with open("./autovpn.yml", "r") as stream:
         config = yaml.safe_load(stream)
 
     args = docopt(__doc__)
 
-    if args["regions"]:
+    if args["<region>"] is None:
         return show_regions(args, config)
     elif args["providers"]:
         return show_providers(config)

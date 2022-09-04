@@ -55,7 +55,7 @@ depending on platform:
                opens the VPN tunnel in a separate Powershell window.
 
 ```
-Usage: autovpn.py <provider> <region>  Provisions a VPN server at <provider> on <region> and connects to it
+Usage: autovpn.py <provider> <region>  Provision a VPN server at <provider> on <region> and connects to it
        autovpn.py <provider> regions   Lists all regions at <provider>
        autovpn.py providers            Lists all available providers
        autovpn.py (-h | --help)        Shows further help and options
