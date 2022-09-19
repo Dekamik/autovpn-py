@@ -128,9 +128,14 @@ def main() -> int:
 
     if args["<region>"] is None:
         return show_regions(args, config)
-    elif args["providers"]:
+
+    elif args["<provider>"] == "providers":
         return show_providers(config)
+
     else:
+        if sys.platform.startswith("linux") and os.geteuid() != 0:
+            print("This command requires sudo privileges")
+            return 1
         return up(args, config)
 
 

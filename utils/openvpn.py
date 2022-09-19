@@ -32,14 +32,7 @@ def connect_win(command, ovpn_config):
 
 def connect_posix(command, ovpn_config, platform):
     cmd = f"{command} --config {ovpn_config}"
-
-    if os.geteuid() == 0:  # user is root
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-    else:
-        # TODO: Find a way to test and retry passwords
-        root_password = getpass.getpass(f"Root privileges required, enter password for {os.getlogin()}: ")
-        p = subprocess.Popen(f"echo {root_password} | sudo -Sn {cmd}", stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                             shell=True)
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     wait_for_interrupt(p, platform)
 
 
