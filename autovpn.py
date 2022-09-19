@@ -28,6 +28,7 @@ __version__ = "DEVELOPMENT_BUILD"
 
 import os
 import sys
+from pathlib import Path
 
 from docopt import docopt
 import yaml
@@ -122,8 +123,9 @@ def show_providers(config) -> int:
 
 def main() -> int:
     args = docopt(__doc__, version=__version__)
+    config_path = Path(__file__).parent.absolute()
 
-    with open("./autovpn.yml", "r") as stream:
+    with open(f"{config_path}/autovpn.yml", "r") as stream:
         config = yaml.safe_load(stream)
 
     if args["<region>"] is None:
