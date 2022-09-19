@@ -131,7 +131,7 @@ def main() -> int:
     with open(f"{application_dir}/autovpn.yml", "r") as stream:
         config = yaml.safe_load(stream)
 
-    if args["providers"]:
+    if args["<provider>"] == "providers" or args["providers"]:
         return show_providers(config)
 
     elif args["<region>"] is None:
@@ -139,7 +139,7 @@ def main() -> int:
 
     else:
         if sys.platform.startswith("linux") and os.geteuid() != 0:
-            print("This command requires sudo privileges")
+            print("This command requires sudo privileges, exiting")
             return 1
         return up(args, config)
 
