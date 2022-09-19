@@ -36,12 +36,8 @@ class Linode(Provider):
         raise ProviderError(f"Unhandled error when downloading regions:\n{response.json()}")
 
     def create_server(self, region: str, type_slug: str, image: str) -> Instance:
-        regions = self.get_regions()
         alphabet = string.ascii_letters + string.digits
         root_pass = ''.join(secrets.choice(alphabet) for _ in range(16))
-
-        if not regions.__contains__(region):
-            raise ValueError(f"Linode has no region \"{region}\"")
 
         headers = {
             "Authorization": f"Bearer {self.api_key}",
