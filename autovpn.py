@@ -28,14 +28,13 @@ __version__ = "DEVELOPMENT_BUILD"
 
 import os
 import sys
-from pathlib import Path
 
-from docopt import docopt
 import yaml
+from docopt import docopt
 
+from providers.base import Provider
 from providers.exceptions import ProviderError
 from providers.linode import Linode
-from providers.base import Provider
 from utils import agent, openvpn
 
 
@@ -123,16 +122,20 @@ def show_providers(config) -> int:
 
 def main() -> int:
     args = docopt(__doc__, version=__version__)
-    config_path = Path(__file__).parent.absolute()
 
-    with open(f"{config_path}/autovpn.yml", "r") as stream:
+    if getattr(sys, 'frozen', False):
+        application_dir = sys._MEIPASS
+    else:
+        application_dir = os.path.dirname(os.path.abspath(__file__))
+
+    with open(f"{application_dir}/autovpn.yml", "r") as stream:
         config = yaml.safe_load(stream)
 
-    if args["<region>"] is None:
-        return show_regions(args, config)
-
-    elif args["<provider>"] == "providers":
+    if args["providers"]:
         return show_providers(config)
+
+    elif args["<region>"] is None:
+        return show_regions(args, config)
 
     else:
         if sys.platform.startswith("linux") and os.geteuid() != 0:
