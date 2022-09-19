@@ -123,8 +123,8 @@ def show_providers(config) -> int:
 def main() -> int:
     args = docopt(__doc__, version=__version__)
 
-    if getattr(sys, 'frozen', False):
-        application_dir = sys._MEIPASS
+    if getattr(sys, 'frozen', False) and hasattr(sys, "_MEIPASS"):
+        application_dir = os.path.dirname(os.path.abspath(sys.executable))
     else:
         application_dir = os.path.dirname(os.path.abspath(__file__))
 
